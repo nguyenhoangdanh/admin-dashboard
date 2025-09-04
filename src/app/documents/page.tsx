@@ -160,22 +160,29 @@ export default function DocumentsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      {/* Header Section */}
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Documents</h1>
-          <p className="text-muted-foreground">
+        <div className="space-y-2">
+          <div className="flex items-center space-x-2">
+            <h1 className="text-4xl font-bold tracking-tight">Documents</h1>
+            <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
+              <Folder className="h-3 w-3 mr-1" />
+              Library
+            </Badge>
+          </div>
+          <p className="text-lg text-muted-foreground">
             Manage and organize your files and documents.
           </p>
         </div>
         <Dialog open={isUploadOpen} onOpenChange={setIsUploadOpen}>
           <DialogTrigger asChild>
-            <Button>
+            <Button className="gradient-primary text-white shadow-medium hover:shadow-large transition-all">
               <Upload className="mr-2 h-4 w-4" />
               Upload File
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
+          <DialogContent className="sm:max-w-[425px] shadow-large">
             <DialogHeader>
               <DialogTitle>Upload Document</DialogTitle>
               <DialogDescription>
