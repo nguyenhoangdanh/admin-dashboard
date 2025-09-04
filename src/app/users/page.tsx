@@ -1,7 +1,13 @@
 "use client"
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useMemo, useState } from "react"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -31,17 +37,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { 
-  Search, 
-  Plus, 
-  MoreHorizontal, 
-  Edit, 
-  Trash2, 
+import {
+  Search,
+  Plus,
+  MoreHorizontal,
+  Edit,
+  Trash2,
   Eye,
   UserPlus,
   Users as UsersIcon,
   Crown,
-  Shield
+  Shield,
+  Download,
 } from "lucide-react"
 import {
   DropdownMenu,
@@ -50,6 +57,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Pagination } from "@/components/ui/pagination"
+import { downloadCsv, toCsv } from "@/lib/utils"
 
 const users = [
   {
@@ -60,7 +69,7 @@ const users = [
     status: "Active",
     avatar: "/avatars/01.png",
     lastActive: "2 hours ago",
-    joinDate: "Jan 2023"
+    joinDate: "Jan 2023",
   },
   {
     id: 2,
@@ -70,7 +79,7 @@ const users = [
     status: "Active",
     avatar: "/avatars/02.png",
     lastActive: "1 day ago",
-    joinDate: "Feb 2023"
+    joinDate: "Feb 2023",
   },
   {
     id: 3,
@@ -80,7 +89,7 @@ const users = [
     status: "Inactive",
     avatar: "/avatars/03.png",
     lastActive: "1 week ago",
-    joinDate: "Mar 2023"
+    joinDate: "Mar 2023",
   },
   {
     id: 4,
@@ -90,7 +99,7 @@ const users = [
     status: "Active",
     avatar: "/avatars/04.png",
     lastActive: "5 minutes ago",
-    joinDate: "Jan 2023"
+    joinDate: "Jan 2023",
   },
   {
     id: 5,
@@ -100,21 +109,53 @@ const users = [
     status: "Pending",
     avatar: "/avatars/05.png",
     lastActive: "Never",
-    joinDate: "Today"
+    joinDate: "Today",
   },
 ]
+
+type SortKey = "name" | "role" | "status" | "lastActive" | "joinDate"
+
+type SortDir = "asc" | "desc"
 
 export default function UsersPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedRole, setSelectedRole] = useState("all")
   const [isAddUserOpen, setIsAddUserOpen] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [pageSize, setPageSize] = useState(10)
+  const [sortKey, setSortKey] = useState<SortKey>("name")
+  const [sortDir, setSortDir] = useState<SortDir>("asc")
 
-  const filteredUsers = users.filter(user => {
-    const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         user.email.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesRole = selectedRole === "all" || user.role.toLowerCase() === selectedRole.toLowerCase()
-    return matchesSearch && matchesRole
-  })
+  const filtered = useMemo(() => {
+    const term = searchTerm.toLowerCase()
+    return users.filter((u) => {
+      const matchesSearch =
+        u.name.toLowerCase().includes(term) ||
+        u.email.toLowerCase().includes(term)
+      const matchesRole =
+        selectedRole === "all" ||
+        u.role.toLowerCase() === selectedRole.toLowerCase()
+      return matchesSearch && matchesRole
+    })
+  }, [searchTerm, selectedRole])
+
+  const sorted = useMemo(() => {
+    const arr = [...filtered]
+    arr.sort((a, b) => {
+      const va = String(a[sortKey] ?? "").toLowerCase()
+      const vb = String(b[sortKey] ?? "").toLowerCase()
+      if (va < vb) return sortDir === "asc" ? -1 : 1
+      if (va > vb) return sortDir === "asc" ? 1 : -1
+      return 0
+    })
+    return arr
+  }, [filtered, sortKey, sortDir])
+
+  const totalItems = sorted.length
+  const paged = useMemo(() => {
+    const start = (currentPage - 1) * pageSize
+    return sorted.slice(start, start + pageSize)
+  }, [sorted, currentPage, pageSize])
 
   const getStatusBadge = (status: string) => {
     const statusConfig = {
@@ -122,7 +163,10 @@ export default function UsersPage() {
       Inactive: "bg-gray-100 text-gray-800",
       Pending: "bg-yellow-100 text-yellow-800",
     }
-    return statusConfig[status as keyof typeof statusConfig] || "bg-gray-100 text-gray-800"
+    return (
+      statusConfig[status as keyof typeof statusConfig] ||
+      "bg-gray-100 text-gray-800"
+    )
   }
 
   const getRoleIcon = (role: string) => {
@@ -136,6 +180,27 @@ export default function UsersPage() {
     }
   }
 
+  const onSort = (key: SortKey) => {
+    if (sortKey === key) {
+      setSortDir((d) => (d === "asc" ? "desc" : "asc"))
+    } else {
+      setSortKey(key)
+      setSortDir("asc")
+    }
+  }
+
+  const exportCsv = () => {
+    const csv = toCsv(sorted, [
+      { key: "name", label: "Name" },
+      { key: "email", label: "Email" },
+      { key: "role", label: "Role" },
+      { key: "status", label: "Status" },
+      { key: "lastActive", label: "Last Active" },
+      { key: "joinDate", label: "Join Date" },
+    ])
+    downloadCsv("users.csv", csv)
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -145,71 +210,78 @@ export default function UsersPage() {
             Manage your team members and their permissions.
           </p>
         </div>
-        <Dialog open={isAddUserOpen} onOpenChange={setIsAddUserOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              Add User
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Add New User</DialogTitle>
-              <DialogDescription>
-                Create a new user account and set their permissions.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="name" className="text-right">
-                  Name
-                </Label>
-                <Input
-                  id="name"
-                  placeholder="Enter full name"
-                  className="col-span-3"
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="email" className="text-right">
-                  Email
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="Enter email address"
-                  className="col-span-3"
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="role" className="text-right">
-                  Role
-                </Label>
-                <Select>
-                  <SelectTrigger className="col-span-3">
-                    <SelectValue placeholder="Select a role" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="user">User</SelectItem>
-                    <SelectItem value="editor">Editor</SelectItem>
-                    <SelectItem value="admin">Admin</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsAddUserOpen(false)}>
-                Cancel
+        <div className="flex items-center gap-2">
+          <Button variant="outline" onClick={exportCsv}>
+            <Download className="mr-2 h-4 w-4" /> Export CSV
+          </Button>
+          <Dialog open={isAddUserOpen} onOpenChange={setIsAddUserOpen}>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="mr-2 h-4 w-4" />
+                Add User
               </Button>
-              <Button onClick={() => setIsAddUserOpen(false)}>
-                Create User
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Add New User</DialogTitle>
+                <DialogDescription>
+                  Create a new user account and set their permissions.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="name" className="text-right">
+                    Name
+                  </Label>
+                  <Input
+                    id="name"
+                    placeholder="Enter full name"
+                    className="col-span-3"
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="email" className="text-right">
+                    Email
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="Enter email address"
+                    className="col-span-3"
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="role" className="text-right">
+                    Role
+                  </Label>
+                  <Select>
+                    <SelectTrigger className="col-span-3">
+                      <SelectValue placeholder="Select a role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="user">User</SelectItem>
+                      <SelectItem value="editor">Editor</SelectItem>
+                      <SelectItem value="admin">Admin</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsAddUserOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button onClick={() => setIsAddUserOpen(false)}>
+                  Create User
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
-      {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -218,9 +290,7 @@ export default function UsersPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{users.length}</div>
-            <p className="text-xs text-muted-foreground">
-              +2 new this week
-            </p>
+            <p className="text-xs text-muted-foreground">+2 new this week</p>
           </CardContent>
         </Card>
 
@@ -231,11 +301,9 @@ export default function UsersPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {users.filter(u => u.status === "Active").length}
+              {users.filter((u) => u.status === "Active").length}
             </div>
-            <p className="text-xs text-muted-foreground">
-              +1 from yesterday
-            </p>
+            <p className="text-xs text-muted-foreground">+1 from yesterday</p>
           </CardContent>
         </Card>
 
@@ -246,11 +314,9 @@ export default function UsersPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {users.filter(u => u.role === "Admin").length}
+              {users.filter((u) => u.role === "Admin").length}
             </div>
-            <p className="text-xs text-muted-foreground">
-              No change
-            </p>
+            <p className="text-xs text-muted-foreground">No change</p>
           </CardContent>
         </Card>
 
@@ -261,22 +327,17 @@ export default function UsersPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {users.filter(u => u.status === "Pending").length}
+              {users.filter((u) => u.status === "Pending").length}
             </div>
-            <p className="text-xs text-muted-foreground">
-              +1 today
-            </p>
+            <p className="text-xs text-muted-foreground">+1 today</p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Filters and Search */}
       <Card>
         <CardHeader>
           <CardTitle>User Management</CardTitle>
-          <CardDescription>
-            View and manage all user accounts.
-          </CardDescription>
+          <CardDescription>View and manage all user accounts.</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center space-x-4 mb-6">
@@ -285,11 +346,20 @@ export default function UsersPage() {
               <Input
                 placeholder="Search users..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value)
+                  setCurrentPage(1)
+                }}
                 className="pl-10"
               />
             </div>
-            <Select value={selectedRole} onValueChange={setSelectedRole}>
+            <Select
+              value={selectedRole}
+              onValueChange={(v) => {
+                setSelectedRole(v)
+                setCurrentPage(1)
+              }}
+            >
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Filter by role" />
               </SelectTrigger>
@@ -305,28 +375,103 @@ export default function UsersPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>User</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Last Active</TableHead>
-                <TableHead>Join Date</TableHead>
+                <TableHead>
+                  <button
+                    className="font-medium hover:underline"
+                    onClick={() => onSort("name")}
+                    aria-sort={
+                      sortKey === "name"
+                        ? sortDir === "asc"
+                          ? "ascending"
+                          : "descending"
+                        : "none"
+                    }
+                  >
+                    User
+                  </button>
+                </TableHead>
+                <TableHead>
+                  <button
+                    className="font-medium hover:underline"
+                    onClick={() => onSort("role")}
+                    aria-sort={
+                      sortKey === "role"
+                        ? sortDir === "asc"
+                          ? "ascending"
+                          : "descending"
+                        : "none"
+                    }
+                  >
+                    Role
+                  </button>
+                </TableHead>
+                <TableHead>
+                  <button
+                    className="font-medium hover:underline"
+                    onClick={() => onSort("status")}
+                    aria-sort={
+                      sortKey === "status"
+                        ? sortDir === "asc"
+                          ? "ascending"
+                          : "descending"
+                        : "none"
+                    }
+                  >
+                    Status
+                  </button>
+                </TableHead>
+                <TableHead>
+                  <button
+                    className="font-medium hover:underline"
+                    onClick={() => onSort("lastActive")}
+                    aria-sort={
+                      sortKey === "lastActive"
+                        ? sortDir === "asc"
+                          ? "ascending"
+                          : "descending"
+                        : "none"
+                    }
+                  >
+                    Last Active
+                  </button>
+                </TableHead>
+                <TableHead>
+                  <button
+                    className="font-medium hover:underline"
+                    onClick={() => onSort("joinDate")}
+                    aria-sort={
+                      sortKey === "joinDate"
+                        ? sortDir === "asc"
+                          ? "ascending"
+                          : "descending"
+                        : "none"
+                    }
+                  >
+                    Join Date
+                  </button>
+                </TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredUsers.map((user) => (
+              {paged.map((user) => (
                 <TableRow key={user.id}>
                   <TableCell>
                     <div className="flex items-center space-x-3">
                       <Avatar>
                         <AvatarImage src={user.avatar} alt={user.name} />
                         <AvatarFallback>
-                          {user.name.split(' ').map(n => n[0]).join('')}
+                          {user.name
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")}
                         </AvatarFallback>
                       </Avatar>
                       <div>
                         <div className="font-medium">{user.name}</div>
-                        <div className="text-sm text-muted-foreground">{user.email}</div>
+                        <div className="text-sm text-muted-foreground">
+                          {user.email}
+                        </div>
                       </div>
                     </div>
                   </TableCell>
@@ -372,6 +517,19 @@ export default function UsersPage() {
               ))}
             </TableBody>
           </Table>
+
+          <Pagination
+            className="mt-4"
+            currentPage={currentPage}
+            pageSize={pageSize}
+            totalItems={totalItems}
+            onPageChange={setCurrentPage}
+            onPageSizeChange={(s) => {
+              setPageSize(s)
+              setCurrentPage(1)
+            }}
+            pageSizeOptions={[5, 10, 20, 50]}
+          />
         </CardContent>
       </Card>
     </div>
