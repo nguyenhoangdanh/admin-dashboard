@@ -42,8 +42,8 @@ export function Breadcrumb() {
   }
   
   return (
-    <nav className="flex items-center space-x-1 text-sm text-muted-foreground mb-4">
-      <Home className="h-4 w-4" />
+    <nav className="flex items-center space-x-2 text-sm text-muted-foreground mb-4">
+      <Home className="h-4 w-4 text-muted-foreground" />
       {breadcrumbs.map((item, index) => (
         <Fragment key={item.title}>
           {index > 0 && <ChevronRight className="h-4 w-4" />}
