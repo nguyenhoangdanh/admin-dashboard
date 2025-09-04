@@ -1,53 +1,67 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    /* Modern Minimal palette (HSL triplets for use with hsl(var(--...))) */
-    --background: 210 20% 98%; /* #F7F8FB */
-    --foreground: 215 12% 12%; /* dark text */
+    /* Enhanced Modern Design System */
+    --background: 210 25% 97%; /* Lighter, more premium background */
+    --foreground: 215 25% 8%; /* Deeper text for better contrast */
     --card: 0 0% 100%;
-    --card-foreground: 215 12% 12%;
+    --card-foreground: 215 20% 10%;
     --popover: 0 0% 100%;
-    --popover-foreground: 215 12% 12%;
-    --primary: 217.2 83.2% 53.3%; /* blue - #2563EB-like */
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96%;
+    --popover-foreground: 215 20% 10%;
+    --primary: 217 91% 59%; /* More vibrant primary blue */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 30% 95%; /* Softer secondary */
     --secondary-foreground: 222.2 84% 4.9%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 217.2 83.2% 60%;
-    --accent-foreground: 222.2 84% 4.9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 217.2 83.2% 53.3%;
-    --radius: 0.75rem;
+    --muted: 210 30% 94%;
+    --muted-foreground: 215 20% 50%;
+    --accent: 217 91% 65%; /* Brighter accent */
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 214 25% 88%; /* Softer borders */
+    --input: 214 25% 90%;
+    --ring: 217 91% 59%;
+    --radius: 0.875rem; /* Slightly larger radius for modern look */
+    
+    /* Custom variables for enhanced design */
+    --gradient-primary: linear-gradient(135deg, hsl(217 91% 59%) 0%, hsl(230 91% 65%) 100%);
+    --gradient-secondary: linear-gradient(135deg, hsl(210 30% 95%) 0%, hsl(220 30% 97%) 100%);
+    --shadow-soft: 0 2px 8px -2px hsl(215 25% 8% / 0.08);
+    --shadow-medium: 0 4px 20px -4px hsl(215 25% 8% / 0.12);
+    --shadow-large: 0 8px 32px -8px hsl(215 25% 8% / 0.16);
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
+    --background: 222 35% 4%; /* Deeper dark background */
     --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
+    --card: 222 30% 6%; /* Slightly lighter cards */
     --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
+    --popover: 222 30% 6%;
     --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 84% 4.9%;
-    --secondary: 217.2 32.6% 17.5%;
+    --primary: 217 91% 65%; /* Brighter primary in dark mode */
+    --primary-foreground: 222 35% 4%;
+    --secondary: 217 25% 12%; /* Better contrast secondary */
     --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
+    --muted: 217 25% 10%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 217 91% 70%; /* Even brighter accent */
+    --accent-foreground: 222 35% 4%;
+    --destructive: 0 84% 65%;
     --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 94.1%;
+    --border: 217 25% 15%; /* Better visible borders */
+    --input: 217 25% 12%;
+    --ring: 217 91% 65%;
+    
+    /* Dark mode gradients and shadows */
+    --gradient-primary: linear-gradient(135deg, hsl(217 91% 65%) 0%, hsl(230 91% 70%) 100%);
+    --gradient-secondary: linear-gradient(135deg, hsl(217 25% 12%) 0%, hsl(225 25% 15%) 100%);
+    --shadow-soft: 0 2px 8px -2px hsl(0 0% 0% / 0.20);
+    --shadow-medium: 0 4px 20px -4px hsl(0 0% 0% / 0.25);
+    --shadow-large: 0 8px 32px -8px hsl(0 0% 0% / 0.30);
   }
 }
 
@@ -71,19 +85,83 @@
       "calt" 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    font-weight: 400;
+    line-height: 1.6;
   }
 
-  /* Subtle global focus style consistent with Modern Minimal */
-  :focus {
+  /* Enhanced focus styles */
+  :focus-visible {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    box-shadow: 0 0 0 2px hsl(var(--background)), 0 0 0 4px hsl(var(--primary));
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.3);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.5);
   }
 }
 
-/* Custom smooth transitions for theme switching */
+/* Enhanced utility classes for modern design */
+@layer utilities {
+  .gradient-primary {
+    background: var(--gradient-primary);
+  }
+  
+  .gradient-secondary {
+    background: var(--gradient-secondary);
+  }
+  
+  .shadow-soft {
+    box-shadow: var(--shadow-soft);
+  }
+  
+  .shadow-medium {
+    box-shadow: var(--shadow-medium);
+  }
+  
+  .shadow-large {
+    box-shadow: var(--shadow-large);
+  }
+  
+  .glass-effect {
+    background: hsl(var(--background) / 0.8);
+    backdrop-filter: blur(12px);
+    border: 1px solid hsl(var(--border) / 0.5);
+  }
+  
+  .card-modern {
+    @apply bg-card border shadow-soft rounded-xl transition-all duration-200 hover:shadow-medium;
+  }
+  
+  .text-gradient {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+/* Smooth transitions for all elements */
 * {
   transition:
-    background-color 0.18s ease-in-out,
-    color 0.18s ease-in-out,
-    border-color 0.18s ease-in-out;
+    background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
