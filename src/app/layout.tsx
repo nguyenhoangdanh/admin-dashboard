@@ -1,8 +1,7 @@
 import type { Metadata } from "next"
 import "./globals.css"
 import { ThemeProvider } from "@/components/providers/theme-provider"
-import { Header } from "@/components/layout/header"
-import { Sidebar } from "@/components/layout/sidebar"
+import { DashboardLayout } from "@/components/layout/dashboard-layout"
 
 export const metadata: Metadata = {
   title: "Modern Admin Dashboard",
@@ -23,17 +22,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange={false}
         >
-          <div className="relative flex min-h-screen flex-col">
-            <Header />
-            <div className="flex-1 flex">
-              <aside className="hidden w-64 border-r bg-muted/40 md:block">
-                <Sidebar />
-              </aside>
-              <main className="flex-1 p-6">
-                {children}
-              </main>
-            </div>
-          </div>
+          <DashboardLayout>
+            {children}
+          </DashboardLayout>
         </ThemeProvider>
       </body>
     </html>

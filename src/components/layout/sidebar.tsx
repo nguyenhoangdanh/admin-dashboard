@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { 
   BarChart3, 
   Users, 
@@ -10,7 +11,8 @@ import {
   FileText,
   Calendar,
   Mail,
-  HelpCircle
+  HelpCircle,
+  X
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -23,7 +25,7 @@ const sidebarNavItems = [
   },
   {
     title: "Analytics",
-    href: "/analytics",
+    href: "/dashboard/analytics",
     icon: BarChart3,
   },
   {
@@ -58,37 +60,66 @@ const sidebarNavItems = [
   },
 ]
 
-interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
+  isOpen?: boolean
+  onClose?: () => void
+}
 
-export function Sidebar({ className }: SidebarProps) {
+export function Sidebar({ className, isOpen, onClose }: SidebarProps) {
   const pathname = usePathname()
 
   return (
-    <div className={cn("pb-12", className)}>
-      <div className="space-y-4 py-4">
-        <div className="px-3 py-2">
-          <div className="space-y-1">
-            <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
-              {sidebarNavItems.map((item) => {
-                const isActive = pathname === item.href
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={cn(
-                      "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary",
-                      isActive && "bg-muted text-primary"
-                    )}
-                  >
-                    <item.icon className="h-4 w-4" />
-                    {item.title}
-                  </Link>
-                )
-              })}
-            </nav>
-          </div>
+    <>
+      {/* Mobile backdrop */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 z-40 bg-black/50 md:hidden" 
+          onClick={onClose}
+        />
+      )}
+      
+      {/* Sidebar */}
+      <div className={cn(
+        "fixed inset-y-0 left-0 z-50 w-64 transform border-r bg-background transition-transform duration-300 ease-in-out md:relative md:translate-x-0",
+        isOpen ? "translate-x-0" : "-translate-x-full",
+        className
+      )}>
+        {/* Mobile close button */}
+        <div className="flex items-center justify-between p-4 md:hidden">
+          <h2 className="text-lg font-semibold">Menu</h2>
+          <Button variant="ghost" size="icon" onClick={onClose}>
+            <X className="h-4 w-4" />
+          </Button>
         </div>
+        
+        <ScrollArea className="h-full">
+          <div className="space-y-4 py-4">
+            <div className="px-3 py-2">
+              <div className="space-y-1">
+                <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
+                  {sidebarNavItems.map((item) => {
+                    const isActive = pathname === item.href
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => onClose?.()}
+                        className={cn(
+                          "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary",
+                          isActive && "bg-muted text-primary"
+                        )}
+                      >
+                        <item.icon className="h-4 w-4" />
+                        {item.title}
+                      </Link>
+                    )
+                  })}
+                </nav>
+              </div>
+            </div>
+          </div>
+        </ScrollArea>
       </div>
-    </div>
+    </>
   )
 }

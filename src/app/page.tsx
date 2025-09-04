@@ -1,4 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Overview } from "@/components/charts/overview"
 import { Activity, CreditCard, DollarSign, Users } from "lucide-react"
 
 export default function DashboardPage() {
@@ -73,11 +74,12 @@ export default function DashboardPage() {
         <Card className="col-span-4">
           <CardHeader>
             <CardTitle>Overview</CardTitle>
+            <CardDescription>
+              Revenue overview for the last 7 months
+            </CardDescription>
           </CardHeader>
           <CardContent className="pl-2">
-            <div className="h-[200px] w-full rounded-md border border-dashed flex items-center justify-center">
-              <p className="text-sm text-muted-foreground">Chart Component Placeholder</p>
-            </div>
+            <Overview />
           </CardContent>
         </Card>
         
