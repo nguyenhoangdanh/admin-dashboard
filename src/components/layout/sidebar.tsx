@@ -3,16 +3,16 @@
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { 
-  BarChart3, 
-  Users, 
-  Settings, 
+import {
+  BarChart3,
+  Users,
+  Settings,
   Home,
   FileText,
   Calendar,
   Mail,
   HelpCircle,
-  X
+  X,
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -72,18 +72,20 @@ export function Sidebar({ className, isOpen, onClose }: SidebarProps) {
     <>
       {/* Mobile backdrop */}
       {isOpen && (
-        <div 
-          className="fixed inset-0 z-40 bg-black/50 md:hidden" 
+        <div
+          className="fixed inset-0 z-40 bg-black/50 md:hidden"
           onClick={onClose}
         />
       )}
-      
+
       {/* Sidebar */}
-      <div className={cn(
-        "fixed inset-y-0 left-0 z-50 w-56 transform border-r bg-background transition-transform duration-300 ease-in-out md:relative md:translate-x-0",
-        isOpen ? "translate-x-0" : "-translate-x-full",
-        className
-      )}>
+      <div
+        className={cn(
+          "fixed inset-y-0 left-0 z-50 w-56 transform border-r bg-background transition-transform duration-300 ease-in-out md:relative md:translate-x-0",
+          isOpen ? "translate-x-0" : "-translate-x-full",
+          className
+        )}
+      >
         {/* Mobile close button */}
         <div className="flex items-center justify-between p-4 md:hidden">
           <h2 className="text-lg font-semibold">Menu</h2>
@@ -91,7 +93,7 @@ export function Sidebar({ className, isOpen, onClose }: SidebarProps) {
             <X className="h-4 w-4" />
           </Button>
         </div>
-        
+
         <ScrollArea className="h-full">
           <div className="space-y-4 py-4">
             <div className="px-3 py-2">
