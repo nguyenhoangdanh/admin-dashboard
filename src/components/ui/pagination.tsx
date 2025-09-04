@@ -48,7 +48,11 @@ export function Pagination({
     if (totalPages > 1) items.push(totalPages)
 
     // Ensure current page visible if 1 or last
-    if (currentPage !== 1 && currentPage !== totalPages && !items.includes(currentPage)) {
+    if (
+      currentPage !== 1 &&
+      currentPage !== totalPages &&
+      !items.includes(currentPage)
+    ) {
       items.splice(1, 0, currentPage)
     }
 
@@ -60,9 +64,16 @@ export function Pagination({
   const to = Math.min(currentPage * pageSize, totalItems)
 
   return (
-    <div className={cn("flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between", className)}>
+    <div
+      className={cn(
+        "flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between",
+        className
+      )}
+    >
       <div className="text-sm text-muted-foreground">
-        Showing <span className="font-medium text-foreground">{from}</span>–<span className="font-medium text-foreground">{to}</span> of <span className="font-medium text-foreground">{totalItems}</span>
+        Showing <span className="font-medium text-foreground">{from}</span>–
+        <span className="font-medium text-foreground">{to}</span> of{" "}
+        <span className="font-medium text-foreground">{totalItems}</span>
       </div>
 
       <div className="flex items-center gap-2">
@@ -74,17 +85,27 @@ export function Pagination({
             onChange={(e) => onPageSizeChange(parseInt(e.target.value))}
           >
             {pageSizeOptions.map((opt) => (
-              <option key={opt} value={opt}>{opt}/page</option>
+              <option key={opt} value={opt}>
+                {opt}/page
+              </option>
             ))}
           </select>
         )}
         <div className="flex items-center gap-1">
-          <Button variant="outline" size="sm" onClick={() => goTo(currentPage - 1)} disabled={!canPrev} aria-label="Previous page">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => goTo(currentPage - 1)}
+            disabled={!canPrev}
+            aria-label="Previous page"
+          >
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          {pages.map((p, idx) => (
+          {pages.map((p, idx) =>
             p === "ellipsis" ? (
-              <span key={`e-${idx}`} className="px-2 text-muted-foreground">…</span>
+              <span key={`e-${idx}`} className="px-2 text-muted-foreground">
+                …
+              </span>
             ) : (
               <Button
                 key={p}
@@ -97,8 +118,14 @@ export function Pagination({
                 {p}
               </Button>
             )
-          ))}
-          <Button variant="outline" size="sm" onClick={() => goTo(currentPage + 1)} disabled={!canNext} aria-label="Next page">
+          )}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => goTo(currentPage + 1)}
+            disabled={!canNext}
+            aria-label="Next page"
+          >
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>

@@ -6,7 +6,10 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 // Convert array of objects to CSV string with header
-export function toCsv<T extends Record<string, any>>(rows: T[], columns?: { key: keyof T; label?: string }[]): string {
+export function toCsv<T extends Record<string, any>>(
+  rows: T[],
+  columns?: { key: keyof T; label?: string }[]
+): string {
   if (!rows.length) return ""
   const cols: { key: keyof T; label: string }[] = columns
     ? columns.map((c) => ({ key: c.key, label: String(c.label ?? c.key) }))

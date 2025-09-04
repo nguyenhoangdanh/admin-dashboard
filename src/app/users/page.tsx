@@ -1,7 +1,13 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -42,7 +48,7 @@ import {
   Users as UsersIcon,
   Crown,
   Shield,
-  Download
+  Download,
 } from "lucide-react"
 import {
   DropdownMenu,
@@ -63,7 +69,7 @@ const users = [
     status: "Active",
     avatar: "/avatars/01.png",
     lastActive: "2 hours ago",
-    joinDate: "Jan 2023"
+    joinDate: "Jan 2023",
   },
   {
     id: 2,
@@ -73,7 +79,7 @@ const users = [
     status: "Active",
     avatar: "/avatars/02.png",
     lastActive: "1 day ago",
-    joinDate: "Feb 2023"
+    joinDate: "Feb 2023",
   },
   {
     id: 3,
@@ -83,7 +89,7 @@ const users = [
     status: "Inactive",
     avatar: "/avatars/03.png",
     lastActive: "1 week ago",
-    joinDate: "Mar 2023"
+    joinDate: "Mar 2023",
   },
   {
     id: 4,
@@ -93,7 +99,7 @@ const users = [
     status: "Active",
     avatar: "/avatars/04.png",
     lastActive: "5 minutes ago",
-    joinDate: "Jan 2023"
+    joinDate: "Jan 2023",
   },
   {
     id: 5,
@@ -103,7 +109,7 @@ const users = [
     status: "Pending",
     avatar: "/avatars/05.png",
     lastActive: "Never",
-    joinDate: "Today"
+    joinDate: "Today",
   },
 ]
 
@@ -124,8 +130,11 @@ export default function UsersPage() {
     const term = searchTerm.toLowerCase()
     return users.filter((u) => {
       const matchesSearch =
-        u.name.toLowerCase().includes(term) || u.email.toLowerCase().includes(term)
-      const matchesRole = selectedRole === "all" || u.role.toLowerCase() === selectedRole.toLowerCase()
+        u.name.toLowerCase().includes(term) ||
+        u.email.toLowerCase().includes(term)
+      const matchesRole =
+        selectedRole === "all" ||
+        u.role.toLowerCase() === selectedRole.toLowerCase()
       return matchesSearch && matchesRole
     })
   }, [searchTerm, selectedRole])
@@ -154,7 +163,10 @@ export default function UsersPage() {
       Inactive: "bg-gray-100 text-gray-800",
       Pending: "bg-yellow-100 text-yellow-800",
     }
-    return statusConfig[status as keyof typeof statusConfig] || "bg-gray-100 text-gray-800"
+    return (
+      statusConfig[status as keyof typeof statusConfig] ||
+      "bg-gray-100 text-gray-800"
+    )
   }
 
   const getRoleIcon = (role: string) => {
@@ -255,7 +267,10 @@ export default function UsersPage() {
                 </div>
               </div>
               <DialogFooter>
-                <Button variant="outline" onClick={() => setIsAddUserOpen(false)}>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsAddUserOpen(false)}
+                >
                   Cancel
                 </Button>
                 <Button onClick={() => setIsAddUserOpen(false)}>
@@ -275,9 +290,7 @@ export default function UsersPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{users.length}</div>
-            <p className="text-xs text-muted-foreground">
-              +2 new this week
-            </p>
+            <p className="text-xs text-muted-foreground">+2 new this week</p>
           </CardContent>
         </Card>
 
@@ -288,11 +301,9 @@ export default function UsersPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {users.filter(u => u.status === "Active").length}
+              {users.filter((u) => u.status === "Active").length}
             </div>
-            <p className="text-xs text-muted-foreground">
-              +1 from yesterday
-            </p>
+            <p className="text-xs text-muted-foreground">+1 from yesterday</p>
           </CardContent>
         </Card>
 
@@ -303,11 +314,9 @@ export default function UsersPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {users.filter(u => u.role === "Admin").length}
+              {users.filter((u) => u.role === "Admin").length}
             </div>
-            <p className="text-xs text-muted-foreground">
-              No change
-            </p>
+            <p className="text-xs text-muted-foreground">No change</p>
           </CardContent>
         </Card>
 
@@ -318,11 +327,9 @@ export default function UsersPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {users.filter(u => u.status === "Pending").length}
+              {users.filter((u) => u.status === "Pending").length}
             </div>
-            <p className="text-xs text-muted-foreground">
-              +1 today
-            </p>
+            <p className="text-xs text-muted-foreground">+1 today</p>
           </CardContent>
         </Card>
       </div>
@@ -330,9 +337,7 @@ export default function UsersPage() {
       <Card>
         <CardHeader>
           <CardTitle>User Management</CardTitle>
-          <CardDescription>
-            View and manage all user accounts.
-          </CardDescription>
+          <CardDescription>View and manage all user accounts.</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center space-x-4 mb-6">
@@ -341,11 +346,20 @@ export default function UsersPage() {
               <Input
                 placeholder="Search users..."
                 value={searchTerm}
-                onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1) }}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value)
+                  setCurrentPage(1)
+                }}
                 className="pl-10"
               />
             </div>
-            <Select value={selectedRole} onValueChange={(v) => { setSelectedRole(v); setCurrentPage(1) }}>
+            <Select
+              value={selectedRole}
+              onValueChange={(v) => {
+                setSelectedRole(v)
+                setCurrentPage(1)
+              }}
+            >
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Filter by role" />
               </SelectTrigger>
@@ -362,27 +376,77 @@ export default function UsersPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>
-                  <button className="font-medium hover:underline" onClick={() => onSort("name")} aria-sort={sortKey === "name" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
+                  <button
+                    className="font-medium hover:underline"
+                    onClick={() => onSort("name")}
+                    aria-sort={
+                      sortKey === "name"
+                        ? sortDir === "asc"
+                          ? "ascending"
+                          : "descending"
+                        : "none"
+                    }
+                  >
                     User
                   </button>
                 </TableHead>
                 <TableHead>
-                  <button className="font-medium hover:underline" onClick={() => onSort("role")} aria-sort={sortKey === "role" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
+                  <button
+                    className="font-medium hover:underline"
+                    onClick={() => onSort("role")}
+                    aria-sort={
+                      sortKey === "role"
+                        ? sortDir === "asc"
+                          ? "ascending"
+                          : "descending"
+                        : "none"
+                    }
+                  >
                     Role
                   </button>
                 </TableHead>
                 <TableHead>
-                  <button className="font-medium hover:underline" onClick={() => onSort("status")} aria-sort={sortKey === "status" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
+                  <button
+                    className="font-medium hover:underline"
+                    onClick={() => onSort("status")}
+                    aria-sort={
+                      sortKey === "status"
+                        ? sortDir === "asc"
+                          ? "ascending"
+                          : "descending"
+                        : "none"
+                    }
+                  >
                     Status
                   </button>
                 </TableHead>
                 <TableHead>
-                  <button className="font-medium hover:underline" onClick={() => onSort("lastActive")} aria-sort={sortKey === "lastActive" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
+                  <button
+                    className="font-medium hover:underline"
+                    onClick={() => onSort("lastActive")}
+                    aria-sort={
+                      sortKey === "lastActive"
+                        ? sortDir === "asc"
+                          ? "ascending"
+                          : "descending"
+                        : "none"
+                    }
+                  >
                     Last Active
                   </button>
                 </TableHead>
                 <TableHead>
-                  <button className="font-medium hover:underline" onClick={() => onSort("joinDate")} aria-sort={sortKey === "joinDate" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
+                  <button
+                    className="font-medium hover:underline"
+                    onClick={() => onSort("joinDate")}
+                    aria-sort={
+                      sortKey === "joinDate"
+                        ? sortDir === "asc"
+                          ? "ascending"
+                          : "descending"
+                        : "none"
+                    }
+                  >
                     Join Date
                   </button>
                 </TableHead>
@@ -397,12 +461,17 @@ export default function UsersPage() {
                       <Avatar>
                         <AvatarImage src={user.avatar} alt={user.name} />
                         <AvatarFallback>
-                          {user.name.split(' ').map(n => n[0]).join('')}
+                          {user.name
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")}
                         </AvatarFallback>
                       </Avatar>
                       <div>
                         <div className="font-medium">{user.name}</div>
-                        <div className="text-sm text-muted-foreground">{user.email}</div>
+                        <div className="text-sm text-muted-foreground">
+                          {user.email}
+                        </div>
                       </div>
                     </div>
                   </TableCell>
@@ -455,7 +524,10 @@ export default function UsersPage() {
             pageSize={pageSize}
             totalItems={totalItems}
             onPageChange={setCurrentPage}
-            onPageSizeChange={(s) => { setPageSize(s); setCurrentPage(1) }}
+            onPageSizeChange={(s) => {
+              setPageSize(s)
+              setCurrentPage(1)
+            }}
             pageSizeOptions={[5, 10, 20, 50]}
           />
         </CardContent>
