@@ -43,11 +43,19 @@ export default function SettingsPage() {
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(false)
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
-        <p className="text-muted-foreground">
-          Manage your account settings and preferences.
+    <div className="space-y-8">
+      {/* Header Section */}
+      <div className="space-y-2">
+        <div className="flex items-center space-x-2">
+          <h1 className="text-4xl font-bold tracking-tight">Settings</h1>
+          <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
+            <Shield className="h-3 w-3 mr-1" />
+            Admin
+          </Badge>
+        </div>
+        <p className="text-lg text-muted-foreground">
+          Manage your account settings and preferences.</p>
+      </div>
         </p>
       </div>
 

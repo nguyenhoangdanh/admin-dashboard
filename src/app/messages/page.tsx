@@ -166,29 +166,38 @@ export default function MessagesPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      {/* Header Section */}
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Messages</h1>
-          <p className="text-muted-foreground">
+        <div className="space-y-2">
+          <div className="flex items-center space-x-2">
+            <h1 className="text-4xl font-bold tracking-tight">Messages</h1>
+            <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
+              <MessageSquare className="h-3 w-3 mr-1" />
+              {conversations.reduce((total, conv) => total + conv.unread, 0)} new
+            </Badge>
+          </div>
+          <p className="text-lg text-muted-foreground">
             Stay connected with your team and manage communications.
           </p>
         </div>
-        <Button>
+        <Button className="gradient-primary text-white shadow-medium hover:shadow-large transition-all">
           <Plus className="mr-2 h-4 w-4" />
           New Message
         </Button>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Unread Messages</CardTitle>
-            <MessageSquare className="h-4 w-4 text-muted-foreground" />
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <Card className="card-modern hover:scale-105 transition-transform">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Unread Messages</CardTitle>
+            <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-950/20">
+              <MessageSquare className="h-4 w-4 text-blue-600" />
+            </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
+          <CardContent className="space-y-2">
+            <div className="text-3xl font-bold">
               {conversations.reduce((total, conv) => total + conv.unread, 0)}
             </div>
             <p className="text-xs text-muted-foreground">
