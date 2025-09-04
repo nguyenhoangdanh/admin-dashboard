@@ -32,13 +32,13 @@ export function Header({ onMenuToggle }: HeaderProps) {
         </Button>
         
         <div className="mr-4 hidden md:flex">
-          <h1 className="text-xl font-bold">Admin Dashboard</h1>
+          <h1 className="text-lg font-semibold">Admin Dashboard</h1>
         </div>
-        
+
         <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
           {/* Search */}
           <div className="w-full flex-1 md:w-auto md:flex-none">
-            <Button variant="outline" className="h-9 w-full justify-start text-sm text-muted-foreground md:w-40 lg:w-64">
+            <Button variant="outline" size="sm" className="w-full justify-start text-sm text-muted-foreground md:w-40 lg:w-64">
               <Search className="mr-2 h-4 w-4" />
               Search...
             </Button>
